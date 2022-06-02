@@ -88,6 +88,7 @@ ifdef BUILDTAGS
     GO_BUILDTAGS = ${BUILDTAGS}
 endif
 GO_BUILDTAGS ?=
+GO_BUILDTAGS += urfave_cli_no_docs
 GO_BUILDTAGS += ${DEBUG_TAGS}
 GO_TAGS=$(if $(GO_BUILDTAGS),-tags "$(strip $(GO_BUILDTAGS))",)
 GO_LDFLAGS=-ldflags '-X $(PKG)/version.Version=$(VERSION) -X $(PKG)/version.Revision=$(REVISION) -X $(PKG)/version.Package=$(PACKAGE) $(EXTRA_LDFLAGS)'
@@ -138,7 +139,7 @@ GOTEST ?= $(GO) test
 OUTPUTDIR = $(join $(ROOTDIR), _output)
 CRIDIR=$(OUTPUTDIR)/cri
 
-.PHONY: clean all AUTHORS build binaries test integration generate protos checkprotos coverage ci check help install uninstall vendor release mandir install-man genman install-cri-deps cri-release cri-cni-release cri-integration install-deps bin/cri-integration.test
+.PHONY: clean all AUTHORS build binaries test integration generate protos check-protos coverage ci check help install uninstall vendor release mandir install-man genman install-cri-deps cri-release cri-cni-release cri-integration install-deps bin/cri-integration.test
 .DEFAULT: default
 
 # Forcibly set the default goal to all, in case an include above brought in a rule definition.
@@ -150,7 +151,7 @@ check: proto-fmt ## run all linters
 	@echo "$(WHALE) $@"
 	GOGC=75 golangci-lint run
 
-ci: check binaries checkprotos coverage coverage-integration ## to be used by the CI
+ci: check binaries check-protos coverage coverage-integration ## to be used by the CI
 
 AUTHORS: .mailmap .git/HEAD
 	git log --format='%aN <%aE>' | sort -fu > $@
@@ -221,12 +222,17 @@ FORCE:
 
 define BUILD_BINARY
 @echo "$(WHALE) $@"
-@$(GO) build ${DEBUG_GO_GCFLAGS} ${GO_GCFLAGS} ${GO_BUILD_FLAGS} -o $@ ${GO_LDFLAGS} ${GO_TAGS}  ./$<
+$(GO) build ${DEBUG_GO_GCFLAGS} ${GO_GCFLAGS} ${GO_BUILD_FLAGS} -o $@ ${GO_LDFLAGS} ${GO_TAGS}  ./$<
 endef
 
 # Build a binary from a cmd.
 bin/%: cmd/% FORCE
 	$(call BUILD_BINARY)
+
+# gen-manpages must not have the urfave_cli_no_docs build-tag set
+bin/gen-manpages: cmd/gen-manpages FORCE
+	@echo "$(WHALE) $@"
+	$(GO) build ${DEBUG_GO_GCFLAGS} ${GO_GCFLAGS} ${GO_BUILD_FLAGS} -o $@ ${GO_LDFLAGS} $(subst urfave_cli_no_docs,,${GO_TAGS})  ./cmd/gen-manpages
 
 bin/containerd-shim: cmd/containerd-shim FORCE # set !cgo and omit pie for a static shim build: https://github.com/golang/go/issues/17789#issuecomment-258542220
 	@echo "$(WHALE) $@"
