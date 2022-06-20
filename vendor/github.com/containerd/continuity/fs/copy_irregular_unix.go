@@ -1,5 +1,5 @@
-//go:build gofuzz
-// +build gofuzz
+//go:build !windows && !freebsd
+// +build !windows,!freebsd
 
 /*
    Copyright The containerd Authors.
@@ -17,16 +17,24 @@
    limitations under the License.
 */
 
-package fuzz
+package fs
 
 import (
-	"github.com/containerd/containerd/platforms"
+	"fmt"
+	"os"
+	"syscall"
 )
 
-func FuzzPlatformsParse(data []byte) int {
-	_, err := platforms.Parse(string(data))
-	if err != nil {
-		return 0
+// copyIrregular covers devices, pipes, and sockets
+func copyIrregular(dst string, fi os.FileInfo) error {
+	st, ok := fi.Sys().(*syscall.Stat_t) // not *unix.Stat_t
+	if !ok {
+		return fmt.Errorf("unsupported stat type: %s: %v", dst, fi.Mode())
 	}
-	return 1
+	var rDev int
+	if fi.Mode()&os.ModeDevice == os.ModeDevice {
+		rDev = int(st.Rdev)
+	}
+	//nolint:unconvert
+	return syscall.Mknod(dst, uint32(st.Mode), rDev)
 }

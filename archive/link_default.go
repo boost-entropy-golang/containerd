@@ -1,5 +1,4 @@
-//go:build darwin
-// +build darwin
+//go:build !freebsd
 
 /*
    Copyright The containerd Authors.
@@ -17,20 +16,10 @@
    limitations under the License.
 */
 
-package fs
+package archive
 
-import (
-	"errors"
-	"os"
-	"syscall"
+import "os"
 
-	"golang.org/x/sys/unix"
-)
-
-func copyDevice(dst string, fi os.FileInfo) error {
-	st, ok := fi.Sys().(*syscall.Stat_t)
-	if !ok {
-		return errors.New("unsupported stat type")
-	}
-	return unix.Mknod(dst, uint32(fi.Mode()), int(st.Rdev))
+func link(oldname, newname string) error {
+	return os.Link(oldname, newname)
 }

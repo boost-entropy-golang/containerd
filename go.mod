@@ -4,14 +4,14 @@ go 1.18
 
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20210715213245-6c3934b029d8
-	github.com/Microsoft/go-winio v0.5.1
+	github.com/Microsoft/go-winio v0.5.2
 	github.com/Microsoft/hcsshim v0.9.2
 	github.com/container-orchestrated-devices/container-device-interface v0.3.1
 	github.com/containerd/aufs v1.0.0
 	github.com/containerd/btrfs v1.0.0
-	github.com/containerd/cgroups v1.0.3
+	github.com/containerd/cgroups v1.0.4
 	github.com/containerd/console v1.0.3
-	github.com/containerd/continuity v0.2.2
+	github.com/containerd/continuity v0.3.0
 	github.com/containerd/fifo v1.0.0
 	github.com/containerd/go-cni v1.1.6
 	github.com/containerd/go-runc v1.0.0
@@ -37,7 +37,7 @@ require (
 	github.com/intel/goresctrl v0.2.0
 	github.com/klauspost/compress v1.11.13
 	github.com/moby/locker v1.0.1
-	github.com/moby/sys/mountinfo v0.6.0
+	github.com/moby/sys/mountinfo v0.6.2
 	github.com/moby/sys/signal v0.7.0
 	github.com/moby/sys/symlink v0.2.0
 	github.com/opencontainers/go-digest v1.0.0
@@ -61,16 +61,16 @@ require (
 	go.opentelemetry.io/otel/sdk v1.7.0
 	go.opentelemetry.io/otel/trace v1.7.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150
+	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a
 	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46
-	google.golang.org/grpc v1.46.0
+	google.golang.org/grpc v1.47.0
 	google.golang.org/protobuf v1.28.0
-	k8s.io/api v0.24.0
-	k8s.io/apimachinery v0.24.0
-	k8s.io/apiserver v0.24.0
-	k8s.io/client-go v0.24.0
-	k8s.io/component-base v0.24.0
-	k8s.io/cri-api v0.24.0
+	k8s.io/api v0.24.1
+	k8s.io/apimachinery v0.24.1
+	k8s.io/apiserver v0.24.1
+	k8s.io/client-go v0.24.1
+	k8s.io/component-base v0.24.1
+	k8s.io/cri-api v0.24.1
 	k8s.io/klog/v2 v2.60.1
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 )
